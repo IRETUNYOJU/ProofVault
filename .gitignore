@@ -102,3 +102,9 @@ gas-report.txt
 
 # Slither reports
 slither-report.json
+
+test/
+hardhat.config.js
+hardhat.config.d.ts
+hardhat.config.d.ts.map
+hardhat.config.ts.map
