@@ -191,7 +191,7 @@ class HederaContractDeployer {
       }
 
       // Get contract info for EVM address
-      const contractInfo = await this.getContractInfo(contractId.toString());
+      const contractInfo = this.getContractInfo(contractId.toString());
 
       const deployedContract: DeployedContract = {
         name: contractName,
@@ -219,7 +219,7 @@ class HederaContractDeployer {
   /**
    * Get contract information including EVM address
    */
-  private async getContractInfo(contractId: string): Promise<HederaContractInfo> {
+  private getContractInfo(contractId: string): HederaContractInfo {
     try {
       // For now, we'll generate the EVM address from the contract ID
       // In a real implementation, you would query the contract info from Hedera
@@ -297,7 +297,7 @@ class HederaContractDeployer {
   /**
    * Verify contracts on block explorer
    */
-  private async verifyContracts(): Promise<void> {
+  private verifyContracts(): void {
     if (!this.config.verification?.enabled) {
       this.logger.info('Contract verification is disabled');
       return;
@@ -327,7 +327,7 @@ class HederaContractDeployer {
       await this.deployAllContracts();
 
       if (this.config.verification?.enabled) {
-        await this.verifyContracts();
+        this.verifyContracts();
       }
 
       this.deploymentResult.success = true;
@@ -342,11 +342,7 @@ class HederaContractDeployer {
 
     // Save deployment result
     try {
-      await saveDeploymentResult(
-        this.deploymentResult,
-        config.getDeploymentOutputDir(),
-        this.logger,
-      );
+      saveDeploymentResult(this.deploymentResult, config.getDeploymentOutputDir(), this.logger);
     } catch (error) {
       this.logger.error('Failed to save deployment result:', error);
     }

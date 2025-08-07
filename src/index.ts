@@ -6,27 +6,29 @@
  * on the Hedera blockchain network.
  */
 
+export * from './config';
 export * from './types';
 export * from './utils';
-export * from './config';
+
+import type { NetworkConfig } from './types';
 
 // Re-export important contract types when they're generated
-export type { LegalCaseManager, IdentityAttestation, ProofVault } from '../typechain-types';
+export type { IdentityAttestation, LegalCaseManager, ProofVault } from '../typechain-types';
 
 /**
  * Main ProofVault class for interacting with the system
  */
 export class ProofVaultSDK {
-  private readonly networkConfig: any;
+  private readonly networkConfig: NetworkConfig;
 
-  constructor(networkConfig: any) {
+  constructor(networkConfig: NetworkConfig) {
     this.networkConfig = networkConfig;
   }
 
   /**
    * Initialize the ProofVault SDK
    */
-  public async initialize(): Promise<void> {
+  public initialize(): void {
     // Implementation will be added as we build the system
     console.log('ProofVault SDK initialized for network:', this.networkConfig.network);
   }

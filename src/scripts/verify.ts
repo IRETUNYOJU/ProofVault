@@ -10,8 +10,8 @@ import type { VerificationOptions } from '../types';
 import { ConsoleLogger, loadLatestDeployment, retry } from '../utils';
 
 class ContractVerifier {
-  private logger: ConsoleLogger;
-  private networkName: string;
+  private readonly logger: ConsoleLogger;
+  private readonly networkName: string;
 
   constructor(networkName?: string) {
     this.networkName = networkName ?? process.env['NETWORK'] ?? 'testnet';
@@ -171,10 +171,15 @@ async function main(): Promise<void> {
     const contractName = args[2];
     const constructorArgs = args[3] ? JSON.parse(args[3]) : undefined;
 
+    if (!contractAddress || !contractName) {
+      console.error('Error: Contract address and name are required');
+      process.exit(1);
+    }
+
     console.log(`Verifying specific contract: ${contractName} at ${contractAddress}`);
     const success = await verifier.verifyContractByAddress(
-      contractAddress!,
-      contractName!,
+      contractAddress,
+      contractName,
       constructorArgs,
     );
     process.exit(success ? 0 : 1);

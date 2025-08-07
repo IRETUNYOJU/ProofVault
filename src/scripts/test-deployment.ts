@@ -20,7 +20,7 @@ class DeploymentTester {
   /**
    * Test Hedera client connection
    */
-  async testHederaConnection(): Promise<boolean> {
+  testHederaConnection(): boolean {
     this.logger.info('🔗 Testing Hedera client connection...');
 
     try {
@@ -100,7 +100,7 @@ class DeploymentTester {
   /**
    * Test configuration validation
    */
-  async testConfiguration(): Promise<boolean> {
+  testConfiguration(): boolean {
     this.logger.info('⚙️ Testing configuration...');
 
     try {
@@ -191,4 +191,3 @@ if (require.main === module) {
 }
 
 export { DeploymentTester };
-

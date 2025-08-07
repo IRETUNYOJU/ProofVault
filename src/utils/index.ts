@@ -10,7 +10,7 @@ import type { DeploymentResult, Logger } from '../types';
  * Simple console logger implementation
  */
 export class ConsoleLogger implements Logger {
-  private logLevel: string;
+  private readonly logLevel: string;
 
   constructor(logLevel = 'info') {
     this.logLevel = logLevel;
@@ -23,13 +23,13 @@ export class ConsoleLogger implements Logger {
     return messageLevelIndex >= currentLevelIndex;
   }
 
-  info(message: string, ...args: any[]): void {
+  info(message: string, ...args: unknown[]): void {
     if (this.shouldLog('info')) {
       console.log(`[INFO] ${message}`, ...args);
     }
   }
 
-  warn(message: string, ...args: any[]): void {
+  warn(message: string, ...args: unknown[]): void {
     if (this.shouldLog('warn')) {
       console.warn(`[WARN] ${message}`, ...args);
     }
@@ -119,11 +119,11 @@ export async function waitForHederaTransaction(
 /**
  * Save deployment result to file
  */
-export async function saveDeploymentResult(
+export function saveDeploymentResult(
   result: DeploymentResult,
   outputDir: string,
   logger?: Logger,
-): Promise<void> {
+): void {
   try {
     // Ensure output directory exists
     if (!fs.existsSync(outputDir)) {
@@ -256,7 +256,7 @@ export function getContractArtifactPath(contractName: string): string {
 /**
  * Load contract artifact
  */
-export function loadContractArtifact(contractName: string): any {
+export function loadContractArtifact(contractName: string): { bytecode: string; abi: unknown[] } {
   const artifactPath = getContractArtifactPath(contractName);
 
   if (!fs.existsSync(artifactPath)) {

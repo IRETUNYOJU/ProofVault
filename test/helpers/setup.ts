@@ -3,6 +3,7 @@
  */
 
 import type { AccountId, Client, PrivateKey } from '@hashgraph/sdk';
+import type { HardhatEthersSigner } from '@nomicfoundation/hardhat-ethers/signers';
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
 import type { IdentityAttestation, LegalCaseManager, ProofVault } from '../../typechain-types';
@@ -14,12 +15,12 @@ export interface TestContracts {
 }
 
 export interface TestAccounts {
-  deployer: any;
-  admin: any;
-  user1: any;
-  user2: any;
-  legalAuthority: any;
-  forensicExpert: any;
+  deployer: HardhatEthersSigner;
+  admin: HardhatEthersSigner;
+  user1: HardhatEthersSigner;
+  user2: HardhatEthersSigner;
+  legalAuthority: HardhatEthersSigner;
+  forensicExpert: HardhatEthersSigner;
 }
 
 export interface HederaTestSetup {
@@ -112,12 +113,12 @@ export async function setupTestAccounts(contracts: TestContracts): Promise<TestA
   );
 
   return {
-    deployer,
-    admin,
-    user1,
-    user2,
-    legalAuthority,
-    forensicExpert,
+    deployer: deployer as HardhatEthersSigner,
+    admin: admin,
+    user1: user1,
+    user2: user2,
+    legalAuthority: legalAuthority,
+    forensicExpert: forensicExpert,
   };
 }
 

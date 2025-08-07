@@ -15,7 +15,7 @@ export interface NetworkConfig {
 
 export interface ContractConfig {
   name: string;
-  constructorArgs?: any[];
+  constructorArgs?: unknown[];
   libraries?: Record<string, string>;
   verify?: boolean;
 }
@@ -41,7 +41,7 @@ export interface DeployedContract {
   blockNumber: number;
   gasUsed: string;
   deploymentTimestamp: number;
-  constructorArgs?: any[];
+  constructorArgs?: unknown[];
   verified?: boolean;
 }
 
@@ -136,7 +136,7 @@ export class DeploymentError extends Error {
   constructor(
     message: string,
     public readonly code: string,
-    public readonly details?: any,
+    public readonly details?: unknown,
   ) {
     super(message);
     this.name = 'DeploymentError';
@@ -147,7 +147,7 @@ export class ContractVerificationError extends Error {
   constructor(
     message: string,
     public readonly contractAddress: string,
-    public readonly details?: any,
+    public readonly details?: unknown,
   ) {
     super(message);
     this.name = 'ContractVerificationError';
@@ -158,7 +158,7 @@ export class HederaClientError extends Error {
   constructor(
     message: string,
     public readonly code: string,
-    public readonly details?: any,
+    public readonly details?: unknown,
   ) {
     super(message);
     this.name = 'HederaClientError';
