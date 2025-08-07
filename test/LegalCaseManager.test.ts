@@ -46,7 +46,7 @@ describe('LegalCaseManager', () => {
     it('Should have correct role constants', async () => {
       const caseAdminRole = await contracts.legalCaseManager.CASE_ADMIN_ROLE();
       const judgeRole = await contracts.legalCaseManager.JUDGE_ROLE();
-      const lawyerRole = await contracts.legalCaseManager.LAWYER_ROLE();
+      const lawyerRole = await contracts.legalCaseManager.LEGAL_COUNSEL_ROLE();
 
       expect(caseAdminRole).to.not.equal(ethers.ZeroHash);
       expect(judgeRole).to.not.equal(ethers.ZeroHash);
@@ -60,7 +60,7 @@ describe('LegalCaseManager', () => {
 
       const tx = await contracts.legalCaseManager
         .connect(accounts.user1)
-        .createCase(
+        .fileCase(
           caseData.caseNumber,
           caseData.caseTitle,
           caseData.caseType,
@@ -90,7 +90,7 @@ describe('LegalCaseManager', () => {
       await expect(
         contracts.legalCaseManager
           .connect(accounts.user1)
-          .createCase(
+          .fileCase(
             caseData.caseNumber,
             caseData.caseTitle,
             caseData.caseType,
@@ -116,7 +116,7 @@ describe('LegalCaseManager', () => {
       // Create first case
       await contracts.legalCaseManager
         .connect(accounts.user1)
-        .createCase(
+        .fileCase(
           caseData.caseNumber,
           caseData.caseTitle,
           caseData.caseType,
@@ -131,7 +131,7 @@ describe('LegalCaseManager', () => {
       await expectRevert(
         contracts.legalCaseManager
           .connect(accounts.user2)
-          .createCase(
+          .fileCase(
             caseData.caseNumber,
             'Different Title',
             caseData.caseType,
@@ -152,7 +152,7 @@ describe('LegalCaseManager', () => {
       await expectRevert(
         contracts.legalCaseManager
           .connect(accounts.user1)
-          .createCase(
+          .fileCase(
             caseData.caseNumber,
             caseData.caseTitle,
             caseData.caseType,
@@ -174,7 +174,7 @@ describe('LegalCaseManager', () => {
       const caseData = createSampleCaseData();
       await contracts.legalCaseManager
         .connect(accounts.user1)
-        .createCase(
+        .fileCase(
           caseData.caseNumber,
           caseData.caseTitle,
           caseData.caseType,
@@ -234,7 +234,7 @@ describe('LegalCaseManager', () => {
       const caseData = createSampleCaseData();
       await contracts.legalCaseManager
         .connect(accounts.user1)
-        .createCase(
+        .fileCase(
           caseData.caseNumber,
           caseData.caseTitle,
           caseData.caseType,
@@ -266,7 +266,7 @@ describe('LegalCaseManager', () => {
     it('Should associate evidence with case', async () => {
       await contracts.legalCaseManager
         .connect(accounts.user1)
-        .associateEvidence(caseId, evidenceId);
+        .linkEvidenceToCase(caseId, evidenceId, 'Document', 'Primary evidence', 100);
 
       const caseEvidence = await contracts.legalCaseManager.getCaseEvidence(caseId);
       expect(caseEvidence).to.include(BigInt(evidenceId));
@@ -274,7 +274,9 @@ describe('LegalCaseManager', () => {
 
     it('Should emit EvidenceAssociated event', async () => {
       await expect(
-        contracts.legalCaseManager.connect(accounts.user1).associateEvidence(caseId, evidenceId),
+        contracts.legalCaseManager
+          .connect(accounts.user1)
+          .linkEvidenceToCase(caseId, evidenceId, 'Document', 'Primary evidence', 100),
       )
         .to.emit(contracts.legalCaseManager, 'EvidenceAssociated')
         .withArgs(caseId, evidenceId, accounts.user1.address, (await getCurrentTimestamp()) + 1);
@@ -282,7 +284,9 @@ describe('LegalCaseManager', () => {
 
     it('Should deny unauthorized users from associating evidence', async () => {
       await expectRevert(
-        contracts.legalCaseManager.connect(accounts.user2).associateEvidence(caseId, evidenceId),
+        contracts.legalCaseManager
+          .connect(accounts.user2)
+          .linkEvidenceToCase(caseId, evidenceId, 'Document', 'Primary evidence', 100),
         'Not authorized to associate evidence',
       );
     });
@@ -291,11 +295,13 @@ describe('LegalCaseManager', () => {
       // Associate evidence first time
       await contracts.legalCaseManager
         .connect(accounts.user1)
-        .associateEvidence(caseId, evidenceId);
+        .linkEvidenceToCase(caseId, evidenceId, 'Document', 'Primary evidence', 100);
 
       // Try to associate same evidence again
       await expectRevert(
-        contracts.legalCaseManager.connect(accounts.user1).associateEvidence(caseId, evidenceId),
+        contracts.legalCaseManager
+          .connect(accounts.user1)
+          .linkEvidenceToCase(caseId, evidenceId, 'Document', 'Primary evidence', 100),
         'Evidence already associated with case',
       );
     });
@@ -308,7 +314,7 @@ describe('LegalCaseManager', () => {
       const caseData = createSampleCaseData();
       await contracts.legalCaseManager
         .connect(accounts.user1)
-        .createCase(
+        .fileCase(
           caseData.caseNumber,
           caseData.caseTitle,
           caseData.caseType,
@@ -326,9 +332,16 @@ describe('LegalCaseManager', () => {
 
       await contracts.legalCaseManager
         .connect(accounts.user1)
-        .addParticipant(caseId, accounts.user2.address, participantRole);
+        .addPartyToCase(
+          caseId,
+          accounts.user2.address,
+          participantRole,
+          'Defendant',
+          'contact@example.com',
+          false,
+        );
 
-      const participants = await contracts.legalCaseManager.getCaseParticipants(caseId);
+      const participants = await contracts.legalCaseManager.getCaseParties(caseId);
       expect(participants).to.include(accounts.user2.address);
     });
 
@@ -338,7 +351,14 @@ describe('LegalCaseManager', () => {
       await expect(
         contracts.legalCaseManager
           .connect(accounts.user1)
-          .addParticipant(caseId, accounts.user2.address, participantRole),
+          .addPartyToCase(
+            caseId,
+            accounts.user2.address,
+            participantRole,
+            'Defendant',
+            'contact@example.com',
+            false,
+          ),
       )
         .to.emit(contracts.legalCaseManager, 'ParticipantAdded')
         .withArgs(
@@ -356,7 +376,14 @@ describe('LegalCaseManager', () => {
       await expectRevert(
         contracts.legalCaseManager
           .connect(accounts.user2)
-          .addParticipant(caseId, accounts.forensicExpert.address, participantRole),
+          .addPartyToCase(
+            caseId,
+            accounts.forensicExpert.address,
+            participantRole,
+            'Expert',
+            'expert@example.com',
+            false,
+          ),
         'Not authorized to add participants',
       );
     });
@@ -369,7 +396,7 @@ describe('LegalCaseManager', () => {
       const caseData = createSampleCaseData();
       await contracts.legalCaseManager
         .connect(accounts.user1)
-        .createCase(
+        .fileCase(
           caseData.caseNumber,
           caseData.caseTitle,
           caseData.caseType,
@@ -383,38 +410,56 @@ describe('LegalCaseManager', () => {
     });
 
     it('Should allow judge to issue court order', async () => {
-      const orderType = 1; // INJUNCTION
+      // const orderType = 1; // INJUNCTION
       const orderDescription = 'Test court order';
 
       await contracts.legalCaseManager
         .connect(accounts.legalAuthority)
-        .issueCourtOrder(caseId, orderType, orderDescription);
+        .issueCourtOrder(
+          caseId,
+          'Restraining Order',
+          orderDescription,
+          Math.floor(Date.now() / 1000),
+          Math.floor(Date.now() / 1000) + 86400,
+        );
 
       const orders = await contracts.legalCaseManager.getCaseOrders(caseId);
       expect(orders.length).to.equal(1);
     });
 
     it('Should emit CourtOrderIssued event', async () => {
-      const orderType = 1; // INJUNCTION
+      // const orderType = 1; // INJUNCTION
       const orderDescription = 'Test court order';
 
       await expect(
         contracts.legalCaseManager
           .connect(accounts.legalAuthority)
-          .issueCourtOrder(caseId, orderType, orderDescription),
+          .issueCourtOrder(
+            caseId,
+            'Restraining Order',
+            orderDescription,
+            Math.floor(Date.now() / 1000),
+            Math.floor(Date.now() / 1000) + 86400,
+          ),
       )
         .to.emit(contracts.legalCaseManager, 'CourtOrderIssued')
         .withArgs(caseId, 1, accounts.legalAuthority.address, (await getCurrentTimestamp()) + 1); // orderId = 1
     });
 
     it('Should deny non-judges from issuing orders', async () => {
-      const orderType = 1; // INJUNCTION
+      // const orderType = 1; // INJUNCTION
       const orderDescription = 'Test court order';
 
       await expectRevert(
         contracts.legalCaseManager
           .connect(accounts.user1)
-          .issueCourtOrder(caseId, orderType, orderDescription),
+          .issueCourtOrder(
+            caseId,
+            'Restraining Order',
+            orderDescription,
+            Math.floor(Date.now() / 1000),
+            Math.floor(Date.now() / 1000) + 86400,
+          ),
         `AccessControl: account ${accounts.user1.address.toLowerCase()} is missing role`,
       );
     });
@@ -429,7 +474,7 @@ describe('LegalCaseManager', () => {
 
       await contracts.legalCaseManager
         .connect(accounts.user1)
-        .createCase(
+        .fileCase(
           caseData.caseNumber,
           caseData.caseTitle,
           caseData.caseType,
@@ -465,10 +510,13 @@ describe('LegalCaseManager', () => {
 
     it('Should allow access after adding as participant', async () => {
       // Add user2 as participant
-      await contracts.legalCaseManager.connect(accounts.user1).addParticipant(
+      await contracts.legalCaseManager.connect(accounts.user1).addPartyToCase(
         caseId,
         accounts.user2.address,
         1, // DEFENDANT
+        'Defendant',
+        'contact@example.com',
+        false,
       );
 
       // Now user2 should be able to access the case
