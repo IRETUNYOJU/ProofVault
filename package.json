@@ -1,0 +1,27 @@
+{
+  "name": "proofvault",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://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@github.com/IRETUNYOJU/ProofVault.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IRETUNYOJU/ProofVault/issues"
+  },
+  "homepage": "https://github.com/IRETUNYOJU/ProofVault#readme",
+  "description": "",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.4.0",
+    "dotenv": "^17.2.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0"
+  }
+}
