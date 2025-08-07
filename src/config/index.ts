@@ -11,18 +11,18 @@ dotenv.config();
  * Get environment variable with validation
  */
 function getEnvVar(name: string, required = true, defaultValue?: string): string {
-  const value = process.env[name] || defaultValue;
+  const value = process.env[name] ?? defaultValue;
   if (required && !value) {
     throw new Error(`Environment variable ${name} is required but not set`);
   }
-  return value || '';
+  return value ?? '';
 }
 
 /**
  * Get network configuration based on environment
  */
 export function getNetworkConfig(networkName?: string): NetworkConfig {
-  const network = (networkName || process.env['NETWORK'] || 'testnet') as
+  const network = (networkName ?? process.env['NETWORK'] ?? 'testnet') as
     | 'testnet'
     | 'mainnet'
     | 'local';
@@ -74,7 +74,7 @@ export function getNetworkConfig(networkName?: string): NetworkConfig {
  * Get Hedera client configuration
  */
 export function getHederaClientConfig(networkName?: string): HederaClientConfig {
-  const network = (networkName || process.env['NETWORK'] || 'testnet') as 'testnet' | 'mainnet';
+  const network = (networkName ?? process.env['NETWORK'] ?? 'testnet') as 'testnet' | 'mainnet';
 
   if (network === 'testnet') {
     return {

@@ -52,8 +52,8 @@ class HederaContractDeployer {
     }
 
     this.client.setOperator(this.operatorId, this.operatorKey);
-    this.client.setDefaultMaxTransactionFee(new Hbar(this.hederaConfig.maxTransactionFee || 100));
-    this.client.setDefaultMaxQueryPayment(new Hbar(this.hederaConfig.maxQueryPayment || 10));
+    this.client.setDefaultMaxTransactionFee(new Hbar(this.hederaConfig.maxTransactionFee ?? 100));
+    this.client.setDefaultMaxQueryPayment(new Hbar(this.hederaConfig.maxQueryPayment ?? 10));
 
     this.deploymentResult = {
       network: this.config.network.network,
@@ -136,7 +136,7 @@ class HederaContractDeployer {
    */
   private async deployContract(
     contractName: string,
-    constructorArgs: any[] = [],
+    constructorArgs: unknown[] = [],
   ): Promise<DeployedContract> {
     this.logger.info(`\n🚀 Deploying ${contractName}...`);
 
@@ -261,14 +261,14 @@ class HederaContractDeployer {
       // 1. Deploy IdentityAttestation
       const identityAttestation = await this.deployContract(
         'IdentityAttestation',
-        this.config.contracts.identityAttestation.constructorArgs || [],
+        this.config.contracts.identityAttestation.constructorArgs ?? [],
       );
       this.deploymentResult.contracts['IdentityAttestation'] = identityAttestation;
 
       // 2. Deploy ProofVault
       const proofVault = await this.deployContract(
         'ProofVault',
-        this.config.contracts.proofVault.constructorArgs || [],
+        this.config.contracts.proofVault.constructorArgs ?? [],
       );
       this.deploymentResult.contracts['ProofVault'] = proofVault;
 
@@ -359,7 +359,7 @@ class HederaContractDeployer {
  * Main deployment function
  */
 async function main(): Promise<void> {
-  const networkName = process.argv[2] || process.env['NETWORK'];
+  const networkName = process.argv[2] ?? process.env['NETWORK'];
 
   console.log('🌟 ProofVault Hedera Deployment Script');
   console.log('======================================\n');

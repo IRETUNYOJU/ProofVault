@@ -14,7 +14,7 @@ class ContractVerifier {
   private networkName: string;
 
   constructor(networkName?: string) {
-    this.networkName = networkName || process.env['NETWORK'] || 'testnet';
+    this.networkName = networkName ?? process.env['NETWORK'] ?? 'testnet';
     this.logger = new ConsoleLogger(config.getLogLevel());
   }
 
@@ -46,7 +46,7 @@ class ContractVerifier {
    */
   private async simulateVerification(options: VerificationOptions): Promise<void> {
     // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, options.delay || 5000));
+    await new Promise((resolve) => setTimeout(resolve, options.delay ?? 5000));
 
     // In a real implementation, this would:
     // 1. Submit contract source code to block explorer
@@ -95,7 +95,7 @@ class ContractVerifier {
       const verificationOptions: VerificationOptions = {
         contractAddress: contract.address,
         contractName: name,
-        constructorArgs: contract.constructorArgs || [],
+        constructorArgs: contract.constructorArgs ?? [],
         delay: 5000,
         retries: 3,
       };
@@ -134,7 +134,7 @@ class ContractVerifier {
   public async verifyContractByAddress(
     contractAddress: string,
     contractName: string,
-    constructorArgs?: any[],
+    constructorArgs?: unknown[],
   ): Promise<boolean> {
     if (!ethers.isAddress(contractAddress)) {
       this.logger.error(`Invalid contract address: ${contractAddress}`);
@@ -144,7 +144,7 @@ class ContractVerifier {
     const options: VerificationOptions = {
       contractAddress,
       contractName,
-      constructorArgs: constructorArgs || [],
+      constructorArgs: constructorArgs ?? [],
       delay: 5000,
       retries: 3,
     };
@@ -158,7 +158,7 @@ class ContractVerifier {
  */
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
-  const networkName = args[0] || process.env['NETWORK'];
+  const networkName = args[0] ?? process.env['NETWORK'];
 
   console.log('🔍 ProofVault Contract Verification');
   console.log('===================================\n');

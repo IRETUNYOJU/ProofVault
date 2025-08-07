@@ -75,7 +75,7 @@ export interface ContractDeploymentOptions {
 export interface VerificationOptions {
   contractAddress: string;
   contractName: string;
-  constructorArgs?: any[];
+  constructorArgs?: unknown[];
   libraries?: Record<string, string>;
   delay?: number;
   retries?: number;
@@ -177,8 +177,8 @@ export type DeploymentStatus =
   | 'verified';
 
 export interface Logger {
-  info(message: string, ...args: any[]): void;
-  warn(message: string, ...args: any[]): void;
-  error(message: string, ...args: any[]): void;
-  debug(message: string, ...args: any[]): void;
+  info(message: string, ...args: unknown[]): void;
+  warn(message: string, ...args: unknown[]): void;
+  error(message: string, ...args: unknown[]): void;
+  debug(message: string, ...args: unknown[]): void;
 }

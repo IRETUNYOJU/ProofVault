@@ -69,42 +69,46 @@ export async function setupTestAccounts(contracts: TestContracts): Promise<TestA
   const signers = await ethers.getSigners();
   const [deployer, admin, user1, user2, legalAuthority, forensicExpert] = signers;
 
+  if (!admin || !user1 || !user2 || !legalAuthority || !forensicExpert) {
+    throw new Error('Insufficient signers available for test setup');
+  }
+
   // Grant roles in IdentityAttestation
   await contracts.identityAttestation.grantRole(
     await contracts.identityAttestation.VERIFICATION_AUTHORITY_ROLE(),
-    admin!.address,
+    admin.address,
   );
 
   await contracts.identityAttestation.grantRole(
     await contracts.identityAttestation.VERIFICATION_AUTHORITY_ROLE(),
-    legalAuthority!.address,
+    legalAuthority.address,
   );
 
   // Grant roles in ProofVault
   await contracts.proofVault.grantRole(
     await contracts.proofVault.EVIDENCE_ADMIN_ROLE(),
-    admin!.address,
+    admin.address,
   );
 
   await contracts.proofVault.grantRole(
     await contracts.proofVault.LEGAL_AUTHORITY_ROLE(),
-    legalAuthority!.address,
+    legalAuthority.address,
   );
 
   await contracts.proofVault.grantRole(
     await contracts.proofVault.FORENSIC_EXPERT_ROLE(),
-    forensicExpert!.address,
+    forensicExpert.address,
   );
 
   // Grant roles in LegalCaseManager
   await contracts.legalCaseManager.grantRole(
     await contracts.legalCaseManager.CASE_ADMIN_ROLE(),
-    admin!.address,
+    admin.address,
   );
 
   await contracts.legalCaseManager.grantRole(
     await contracts.legalCaseManager.JUDGE_ROLE(),
-    legalAuthority!.address,
+    legalAuthority.address,
   );
 
   return {
@@ -187,13 +191,13 @@ export async function advanceTime(seconds: number): Promise<void> {
  */
 export async function getCurrentTimestamp(): Promise<number> {
   const block = await ethers.provider.getBlock('latest');
-  return block?.timestamp || 0;
+  return block?.timestamp ?? 0;
 }
 
 /**
  * Helper to expect revert with specific message
  */
-export function expectRevert(promise: Promise<any>, message?: string) {
+export function expectRevert(promise: Promise<unknown>, message?: string) {
   if (message) {
     return expect(promise).to.be.revertedWith(message);
   }
@@ -203,7 +207,7 @@ export function expectRevert(promise: Promise<any>, message?: string) {
 /**
  * Helper to calculate gas used
  */
-export async function getGasUsed(tx: any): Promise<bigint> {
+export async function getGasUsed(tx: { wait(): Promise<{ gasUsed: bigint }> }): Promise<bigint> {
   const receipt = await tx.wait();
   return receipt.gasUsed;
 }

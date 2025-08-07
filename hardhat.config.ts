@@ -24,14 +24,14 @@ const baseConfig: HardhatUserConfig = {
       chainId: 31337,
     },
     testnet: {
-      url: process.env['RPC_URL'] || 'https://testnet.hashio.io/api',
+      url: process.env['RPC_URL'] ?? 'https://testnet.hashio.io/api',
       accounts: process.env['OPERATOR_KEY'] ? [process.env['OPERATOR_KEY']] : [],
       chainId: 296,
       timeout: 60000,
       gasPrice: 'auto',
     },
     mainnet: {
-      url: process.env['MAINNET_RPC_URL'] || 'https://mainnet.hashio.io/api',
+      url: process.env['MAINNET_RPC_URL'] ?? 'https://mainnet.hashio.io/api',
       accounts: process.env['MAINNET_OPERATOR_KEY'] ? [process.env['MAINNET_OPERATOR_KEY']] : [],
       chainId: 295,
       timeout: 60000,

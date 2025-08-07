@@ -35,13 +35,13 @@ export class ConsoleLogger implements Logger {
     }
   }
 
-  error(message: string, ...args: any[]): void {
+  error(message: string, ...args: unknown[]): void {
     if (this.shouldLog('error')) {
       console.error(`[ERROR] ${message}`, ...args);
     }
   }
 
-  debug(message: string, ...args: any[]): void {
+  debug(message: string, ...args: unknown[]): void {
     if (this.shouldLog('debug')) {
       console.debug(`[DEBUG] ${message}`, ...args);
     }
@@ -219,7 +219,7 @@ export async function retry<T>(
   baseDelay = 1000,
   logger?: Logger,
 ): Promise<T> {
-  let lastError: Error;
+  let lastError: Error | undefined;
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
@@ -237,7 +237,7 @@ export async function retry<T>(
     }
   }
 
-  throw lastError!;
+  throw lastError ?? new Error('Retry failed with unknown error');
 }
 
 /**

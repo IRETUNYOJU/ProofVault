@@ -4,7 +4,7 @@
  * Test script to verify Hedera deployment functionality
  */
 
-import { Client, PrivateKey, AccountId } from '@hashgraph/sdk';
+import { AccountId, Client, PrivateKey } from '@hashgraph/sdk';
 import { config } from '../config';
 import { ConsoleLogger, isValidHederaAccountId, isValidHederaPrivateKey } from '../utils';
 
@@ -13,7 +13,7 @@ class DeploymentTester {
   private networkName: string;
 
   constructor(networkName?: string) {
-    this.networkName = networkName || 'testnet';
+    this.networkName = networkName ?? 'testnet';
     this.logger = new ConsoleLogger('info');
   }
 
@@ -171,7 +171,7 @@ class DeploymentTester {
  * Main test function
  */
 async function main(): Promise<void> {
-  const networkName = process.argv[2] || process.env['NETWORK'] || 'testnet';
+  const networkName = process.argv[2] ?? process.env['NETWORK'] ?? 'testnet';
 
   console.log('🧪 ProofVault Deployment Test Suite');
   console.log('===================================\n');
@@ -191,3 +191,4 @@ if (require.main === module) {
 }
 
 export { DeploymentTester };
+
