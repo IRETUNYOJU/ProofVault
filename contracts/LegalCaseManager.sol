@@ -393,7 +393,7 @@ contract LegalCaseManager is AccessControl, ReentrancyGuard {
         require(_evidenceWeight > 0 && _evidenceWeight <= 100, "Invalid evidence weight");
 
         // Verify evidence exists in ProofVault
-        (uint256 evidenceId, , , , , , , , , , , , , , , ) = proofVault.getEvidenceRecord(_evidenceId);
+        (uint256 evidenceId, , , , , , , , , , , , , , ) = proofVault.getEvidenceRecord(_evidenceId);
         require(evidenceId == _evidenceId, "Evidence not found in ProofVault");
 
         CaseEvidence memory newEvidence = CaseEvidence({
@@ -755,7 +755,7 @@ contract LegalCaseManager is AccessControl, ReentrancyGuard {
         uint256 settledCases,
         uint256 pendingCases
     ) {
-        totalCases = _caseIdCounter.current();
+        totalCases = _caseIdCounter;
         activeCases = caseStatusCount[CaseStatus.FILED] +
                       caseStatusCount[CaseStatus.UNDER_INVESTIGATION] +
                       caseStatusCount[CaseStatus.DISCOVERY] +

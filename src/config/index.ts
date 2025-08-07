@@ -154,8 +154,6 @@ export function validateConfig(config: DeploymentConfig): void {
  * Get gas configuration
  */
 export function getGasConfig(networkName?: string): { gasPrice?: string; gasLimit?: number } {
-  const network = networkName || process.env.NETWORK || 'testnet';
-  
   return {
     gasPrice: getEnvVar('GAS_PRICE', false, 'auto'),
     gasLimit: parseInt(getEnvVar('GAS_LIMIT', false, '8000000'), 10),

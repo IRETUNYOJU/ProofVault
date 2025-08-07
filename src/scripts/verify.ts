@@ -6,15 +6,15 @@
 
 import { ethers } from 'ethers';
 import { config } from '../config';
+import type { VerificationOptions } from '../types';
 import { ConsoleLogger, loadLatestDeployment, retry } from '../utils';
-import type { DeploymentResult, VerificationOptions } from '../types';
 
 class ContractVerifier {
   private logger: ConsoleLogger;
   private networkName: string;
 
   constructor(networkName?: string) {
-    this.networkName = networkName || process.env.NETWORK || 'testnet';
+    this.networkName = networkName || process.env['NETWORK'] || 'testnet';
     this.logger = new ConsoleLogger(config.getLogLevel());
   }
 
@@ -93,7 +93,7 @@ class ContractVerifier {
       const verificationOptions: VerificationOptions = {
         contractAddress: contract.address,
         contractName: name,
-        constructorArgs: contract.constructorArgs,
+        constructorArgs: contract.constructorArgs || [],
         delay: 5000,
         retries: 3,
       };
@@ -111,9 +111,8 @@ class ContractVerifier {
     // Wait for all verifications to complete
     const results = await Promise.allSettled(verificationPromises);
     
-    for (let i = 0; i < results.length; i++) {
-      const result = results[i];
-      if (result.status === 'rejected' || !result.value) {
+    for (const result of results) {
+      if (result.status === 'rejected' || (result.status === 'fulfilled' && !result.value)) {
         allVerified = false;
       }
     }
@@ -143,7 +142,7 @@ class ContractVerifier {
     const options: VerificationOptions = {
       contractAddress,
       contractName,
-      constructorArgs,
+      constructorArgs: constructorArgs || [],
       delay: 5000,
       retries: 3,
     };
@@ -162,7 +161,7 @@ class ContractVerifier {
  */
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
-  const networkName = args[0] || process.env.NETWORK;
+  const networkName = args[0] || process.env['NETWORK'];
   
   console.log('🔍 ProofVault Contract Verification');
   console.log('===================================\n');
@@ -194,3 +193,4 @@ if (require.main === module) {
 }
 
 export { ContractVerifier, main as verifyMain };
+

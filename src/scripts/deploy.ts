@@ -5,33 +5,29 @@
  */
 
 import {
-  Client,
-  PrivateKey,
   AccountId,
+  Client,
   ContractCreateTransaction,
   ContractFunctionParameters,
-  Hbar,
-  FileCreateTransaction,
   FileAppendTransaction,
-  ContractCallQuery,
-  ContractExecuteTransaction,
+  FileCreateTransaction,
+  Hbar,
+  PrivateKey,
 } from '@hashgraph/sdk';
-import fs from 'fs';
 import { config } from '../config';
-import {
-  ConsoleLogger,
-  saveDeploymentResult,
-  formatGas,
-  retry,
-  loadContractArtifact
-} from '../utils';
 import type {
-  DeploymentResult,
   DeployedContract,
   DeploymentConfig,
+  DeploymentResult,
   HederaClientConfig,
   HederaContractInfo
 } from '../types';
+import {
+  ConsoleLogger,
+  formatGas,
+  loadContractArtifact,
+  saveDeploymentResult
+} from '../utils';
 
 class HederaContractDeployer {
   private logger: ConsoleLogger;
@@ -408,4 +404,5 @@ if (require.main === module) {
   });
 }
 
-export { HederaContractDeployer, main as deployMain };
+export { main as deployMain, HederaContractDeployer };
+
