@@ -1,27 +1,77 @@
 {
   "name": "proofvault",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "tsc",
+    "clean": "rimraf dist artifacts cache typechain-types",
+    "compile": "hardhat compile",
+    "deploy": "npm run build && node dist/scripts/deploy.js",
+    "deploy:testnet": "npm run build && cross-env NETWORK=testnet node dist/scripts/deploy.js",
+    "deploy:mainnet": "npm run build && cross-env NETWORK=mainnet node dist/scripts/deploy.js",
+    "test": "npm run build && hardhat test",
+    "test:coverage": "hardhat coverage",
+    "lint": "eslint . --ext .ts,.js --fix",
+    "lint:check": "eslint . --ext .ts,.js",
+    "format": "prettier --write \"**/*.{ts,js,json,md,sol}\"",
+    "format:check": "prettier --check \"**/*.{ts,js,json,md,sol}\"",
+    "typecheck": "tsc --noEmit",
+    "prepare": "husky install",
+    "precommit": "lint-staged"
   },
   "repository": {
     "type": "git",
     "url": "git+https://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@github.com/IRETUNYOJU/ProofVault.git"
   },
-  "keywords": [],
+  "keywords": [
+    "hedera",
+    "blockchain",
+    "legal",
+    "evidence",
+    "smart-contracts",
+    "typescript"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/IRETUNYOJU/ProofVault/issues"
   },
   "homepage": "https://github.com/IRETUNYOJU/ProofVault#readme",
-  "description": "",
+  "description": "Decentralized legal evidence management system on Hedera blockchain",
   "dependencies": {
+    "@hashgraph/sdk": "^2.49.2",
     "@openzeppelin/contracts": "^5.4.0",
-    "dotenv": "^17.2.1"
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.4"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-toolbox": "^6.1.0"
+    "@nomicfoundation/hardhat-toolbox": "^6.1.0",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/eslint-plugin": "^8.18.2",
+    "@typescript-eslint/parser": "^8.18.2",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.2.11",
+    "prettier": "^3.4.2",
+    "prettier-plugin-solidity": "^1.4.1",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.7.2"
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,sol}": [
+      "prettier --write"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
   }
 }
