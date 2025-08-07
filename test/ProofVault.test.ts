@@ -4,16 +4,15 @@
 
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
-import { 
-  setupTestEnvironment, 
-  createSampleEvidenceData,
-  expectRevert,
-  getGasUsed,
-  formatTestResult,
-  advanceTime,
-  getCurrentTimestamp
+import type { TestAccounts, TestContracts } from './helpers/setup';
+import {
+    createSampleEvidenceData,
+    expectRevert,
+    formatTestResult,
+    getCurrentTimestamp,
+    getGasUsed,
+    setupTestEnvironment
 } from './helpers/setup';
-import type { TestContracts, TestAccounts } from './helpers/setup';
 
 describe('ProofVault', function () {
   let contracts: TestContracts;

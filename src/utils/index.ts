@@ -5,10 +5,8 @@
 import fs from 'fs';
 import path from 'path';
 import type {
-  DeploymentResult,
-  DeployedContract,
-  Logger,
-  NetworkConfig
+    DeploymentResult,
+    Logger
 } from '../types';
 
 /**

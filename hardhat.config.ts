@@ -7,7 +7,7 @@ import 'solidity-coverage';
 
 dotenv.config();
 
-const config: HardhatUserConfig = {
+const baseConfig: HardhatUserConfig = {
   solidity: {
     version: '0.8.22',
     settings: {
@@ -42,9 +42,6 @@ const config: HardhatUserConfig = {
     enabled: process.env['REPORT_GAS'] !== undefined,
     currency: 'USD',
   },
-  etherscan: {
-    apiKey: process.env['ETHERSCAN_API_KEY'] || undefined,
-  },
   typechain: {
     outDir: 'typechain-types',
     target: 'ethers-v6',
@@ -62,4 +59,11 @@ const config: HardhatUserConfig = {
   },
 };
 
-export default config;
+// Add etherscan config if API key is available
+if (process.env['ETHERSCAN_API_KEY']) {
+  baseConfig.etherscan = {
+    apiKey: process.env['ETHERSCAN_API_KEY'],
+  };
+}
+
+export default baseConfig;

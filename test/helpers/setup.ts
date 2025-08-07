@@ -2,22 +2,17 @@
  * Test setup and helper functions for ProofVault Hedera tests
  */
 
+import {
+  AccountId,
+  Client,
+  PrivateKey
+} from '@hashgraph/sdk';
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
-import { 
-  Client, 
-  PrivateKey, 
-  AccountId, 
-  ContractCreateTransaction,
-  ContractCallQuery,
-  ContractExecuteTransaction,
-  ContractFunctionParameters,
-  Hbar
-} from '@hashgraph/sdk';
-import type { 
+import type {
   IdentityAttestation,
-  ProofVault,
-  LegalCaseManager
+  LegalCaseManager,
+  ProofVault
 } from '../../typechain-types';
 
 export interface TestContracts {
@@ -48,7 +43,7 @@ export interface HederaTestSetup {
  */
 export async function deployTestContracts(): Promise<TestContracts> {
   // Get signers
-  const [deployer] = await ethers.getSigners();
+  await ethers.getSigners();
 
   // Deploy IdentityAttestation
   const IdentityAttestationFactory = await ethers.getContractFactory('IdentityAttestation');
@@ -69,9 +64,9 @@ export async function deployTestContracts(): Promise<TestContracts> {
   await legalCaseManager.waitForDeployment();
 
   return {
-    identityAttestation: identityAttestation as IdentityAttestation,
-    proofVault: proofVault as ProofVault,
-    legalCaseManager: legalCaseManager as LegalCaseManager,
+    identityAttestation: identityAttestation as unknown as IdentityAttestation,
+    proofVault: proofVault as unknown as ProofVault,
+    legalCaseManager: legalCaseManager as unknown as LegalCaseManager,
   };
 }
 
@@ -84,40 +79,40 @@ export async function setupTestAccounts(contracts: TestContracts): Promise<TestA
 
   // Grant roles in IdentityAttestation
   await contracts.identityAttestation.grantRole(
-    await contracts.identityAttestation.VERIFIER_ROLE(),
-    admin.address
+    await contracts.identityAttestation.VERIFICATION_AUTHORITY_ROLE(),
+    admin!.address
   );
 
   await contracts.identityAttestation.grantRole(
-    await contracts.identityAttestation.VERIFIER_ROLE(),
-    legalAuthority.address
+    await contracts.identityAttestation.VERIFICATION_AUTHORITY_ROLE(),
+    legalAuthority!.address
   );
 
   // Grant roles in ProofVault
   await contracts.proofVault.grantRole(
     await contracts.proofVault.EVIDENCE_ADMIN_ROLE(),
-    admin.address
+    admin!.address
   );
 
   await contracts.proofVault.grantRole(
     await contracts.proofVault.LEGAL_AUTHORITY_ROLE(),
-    legalAuthority.address
+    legalAuthority!.address
   );
 
   await contracts.proofVault.grantRole(
     await contracts.proofVault.FORENSIC_EXPERT_ROLE(),
-    forensicExpert.address
+    forensicExpert!.address
   );
 
   // Grant roles in LegalCaseManager
   await contracts.legalCaseManager.grantRole(
     await contracts.legalCaseManager.CASE_ADMIN_ROLE(),
-    admin.address
+    admin!.address
   );
 
   await contracts.legalCaseManager.grantRole(
     await contracts.legalCaseManager.JUDGE_ROLE(),
-    legalAuthority.address
+    legalAuthority!.address
   );
 
   return {

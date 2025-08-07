@@ -175,7 +175,7 @@ async function main(): Promise<void> {
     const constructorArgs = args[3] ? JSON.parse(args[3]) : undefined;
     
     console.log(`Verifying specific contract: ${contractName} at ${contractAddress}`);
-    const success = await verifier.verifyContractByAddress(contractAddress, contractName, constructorArgs);
+    const success = await verifier.verifyContractByAddress(contractAddress!, contractName!, constructorArgs);
     process.exit(success ? 0 : 1);
   } else {
     // Verify all contracts from latest deployment
