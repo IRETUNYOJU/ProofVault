@@ -3,7 +3,7 @@
  */
 
 import dotenv from 'dotenv';
-import type { NetworkConfig, DeploymentConfig, HederaClientConfig } from '../types';
+import type { DeploymentConfig, HederaClientConfig, NetworkConfig } from '../types';
 
 dotenv.config();
 
@@ -22,7 +22,7 @@ function getEnvVar(name: string, required = true, defaultValue?: string): string
  * Get network configuration based on environment
  */
 export function getNetworkConfig(networkName?: string): NetworkConfig {
-  const network = (networkName || process.env.NETWORK || 'testnet') as 'testnet' | 'mainnet' | 'local';
+  const network = (networkName || process.env['NETWORK'] || 'testnet') as 'testnet' | 'mainnet' | 'local';
 
   switch (network) {
     case 'testnet':
@@ -67,7 +67,7 @@ export function getNetworkConfig(networkName?: string): NetworkConfig {
  * Get Hedera client configuration
  */
 export function getHederaClientConfig(networkName?: string): HederaClientConfig {
-  const network = (networkName || process.env.NETWORK || 'testnet') as 'testnet' | 'mainnet';
+  const network = (networkName || process.env['NETWORK'] || 'testnet') as 'testnet' | 'mainnet';
   
   if (network === 'testnet') {
     return {

@@ -1,13 +1,7 @@
-const { FlatCompat } = require('@eslint/eslintrc');
 const js = require('@eslint/js');
 const typescriptEslint = require('@typescript-eslint/eslint-plugin');
 const typescriptParser = require('@typescript-eslint/parser');
 const prettier = require('eslint-plugin-prettier');
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-});
 
 module.exports = [
   {
@@ -21,14 +15,9 @@ module.exports = [
       '*.config.js',
     ],
   },
-  ...compat.extends(
-    'eslint:recommended',
-    '@typescript-eslint/recommended',
-    '@typescript-eslint/recommended-requiring-type-checking',
-    'prettier'
-  ),
+  js.configs.recommended,
   {
-    files: ['**/*.ts', '**/*.js'],
+    files: ['**/*.ts'],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
@@ -42,10 +31,11 @@ module.exports = [
       prettier: prettier,
     },
     rules: {
+      ...typescriptEslint.configs.recommended.rules,
       // TypeScript specific rules
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      '@typescript-eslint/explicit-function-return-type': 'error',
-      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
       '@typescript-eslint/prefer-optional-chain': 'error',

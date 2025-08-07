@@ -1,9 +1,9 @@
-import { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
 import '@typechain/hardhat';
-import 'hardhat-gas-reporter';
-import 'solidity-coverage';
 import dotenv from 'dotenv';
+import 'hardhat-gas-reporter';
+import { HardhatUserConfig } from 'hardhat/config';
+import 'solidity-coverage';
 
 dotenv.config();
 
@@ -24,26 +24,26 @@ const config: HardhatUserConfig = {
       chainId: 31337,
     },
     testnet: {
-      url: process.env.RPC_URL || 'https://testnet.hashio.io/api',
-      accounts: process.env.OPERATOR_KEY ? [process.env.OPERATOR_KEY] : [],
+      url: process.env['RPC_URL'] || 'https://testnet.hashio.io/api',
+      accounts: process.env['OPERATOR_KEY'] ? [process.env['OPERATOR_KEY']] : [],
       chainId: 296,
       timeout: 60000,
       gasPrice: 'auto',
     },
     mainnet: {
-      url: process.env.MAINNET_RPC_URL || 'https://mainnet.hashio.io/api',
-      accounts: process.env.MAINNET_OPERATOR_KEY ? [process.env.MAINNET_OPERATOR_KEY] : [],
+      url: process.env['MAINNET_RPC_URL'] || 'https://mainnet.hashio.io/api',
+      accounts: process.env['MAINNET_OPERATOR_KEY'] ? [process.env['MAINNET_OPERATOR_KEY']] : [],
       chainId: 295,
       timeout: 60000,
       gasPrice: 'auto',
     },
   },
   gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
+    enabled: process.env['REPORT_GAS'] !== undefined,
     currency: 'USD',
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: process.env['ETHERSCAN_API_KEY'] || undefined,
   },
   typechain: {
     outDir: 'typechain-types',
