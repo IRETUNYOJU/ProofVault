@@ -10,7 +10,6 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol
  * @notice Allows trusted entities to verify identities while maintaining privacy options
  */
 contract IdentityAttestation is AccessControl, ReentrancyGuard {
-    using Counters for Counters.Counter;
 
     // Role definitions
     bytes32 public constant IDENTITY_ADMIN_ROLE = keccak256("IDENTITY_ADMIN_ROLE");
@@ -102,8 +101,8 @@ contract IdentityAttestation is AccessControl, ReentrancyGuard {
     }
 
     // State variables
-    Counters.Counter private _identityIdCounter;
-    Counters.Counter private _requestIdCounter;
+    uint256 private _identityIdCounter;
+    uint256 private _requestIdCounter;
 
     mapping(address => IdentityRecord) public identityRecords;
     mapping(uint256 => VerificationRequest) public verificationRequests;
@@ -209,8 +208,8 @@ contract IdentityAttestation is AccessControl, ReentrancyGuard {
         
         require(msg.value >= verificationFees[_requestedLevel], "Insufficient verification fee");
 
-        _requestIdCounter.increment();
-        uint256 newRequestId = _requestIdCounter.current();
+        _requestIdCounter++;
+        uint256 newRequestId = _requestIdCounter;
 
         verificationRequests[newRequestId] = VerificationRequest({
             requestId: newRequestId,
@@ -252,8 +251,8 @@ contract IdentityAttestation is AccessControl, ReentrancyGuard {
         request.assignedVerifier = msg.sender;
 
         if (_approved) {
-            _identityIdCounter.increment();
-            uint256 newIdentityId = _identityIdCounter.current();
+            _identityIdCounter++;
+            uint256 newIdentityId = _identityIdCounter;
 
             // Create or update identity record
             identityRecords[request.requester] = IdentityRecord({
