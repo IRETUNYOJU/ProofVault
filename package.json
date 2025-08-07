@@ -21,7 +21,10 @@
     "format:check": "prettier --check \"**/*.{ts,js,json,md,sol}\"",
     "typecheck": "tsc --noEmit",
     "prepare": "husky install",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "quality:check": "bash scripts/quality-check.sh",
+    "quality:fix": "npm run lint && npm run format",
+    "pre-deploy": "npm run quality:check"
   },
   "repository": {
     "type": "git",

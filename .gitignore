@@ -1,2 +1,104 @@
-node_modules
-cache
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+out/
+
+# Hardhat files
+artifacts/
+cache/
+typechain-types/
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Deployment outputs
+deployments/
+deployment-*.json
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Private keys and sensitive data
+*.key
+*.pem
+private-keys/
+secrets/
+
+# Test results
+test-results.xml
+junit.xml
+
+# Backup files
+*.bak
+*.backup
+
+# Local development
+.local/
+
+# Hedera specific
+hedera-*.json
+account-*.json
+
+# Contract verification
+verify/
+verification/
+
+# Gas reports
+gas-report.txt
+
+# Slither reports
+slither-report.json
