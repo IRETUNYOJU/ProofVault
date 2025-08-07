@@ -2,18 +2,10 @@
  * Test setup and helper functions for ProofVault Hedera tests
  */
 
-import {
-  AccountId,
-  Client,
-  PrivateKey
-} from '@hashgraph/sdk';
+import type { AccountId, Client, PrivateKey } from '@hashgraph/sdk';
 import { expect } from 'chai';
 import { ethers } from 'hardhat';
-import type {
-  IdentityAttestation,
-  LegalCaseManager,
-  ProofVault
-} from '../../typechain-types';
+import type { IdentityAttestation, LegalCaseManager, ProofVault } from '../../typechain-types';
 
 export interface TestContracts {
   identityAttestation: IdentityAttestation;
@@ -59,7 +51,7 @@ export async function deployTestContracts(): Promise<TestContracts> {
   const LegalCaseManagerFactory = await ethers.getContractFactory('LegalCaseManager');
   const legalCaseManager = await LegalCaseManagerFactory.deploy(
     await proofVault.getAddress(),
-    await identityAttestation.getAddress()
+    await identityAttestation.getAddress(),
   );
   await legalCaseManager.waitForDeployment();
 
@@ -80,39 +72,39 @@ export async function setupTestAccounts(contracts: TestContracts): Promise<TestA
   // Grant roles in IdentityAttestation
   await contracts.identityAttestation.grantRole(
     await contracts.identityAttestation.VERIFICATION_AUTHORITY_ROLE(),
-    admin!.address
+    admin!.address,
   );
 
   await contracts.identityAttestation.grantRole(
     await contracts.identityAttestation.VERIFICATION_AUTHORITY_ROLE(),
-    legalAuthority!.address
+    legalAuthority!.address,
   );
 
   // Grant roles in ProofVault
   await contracts.proofVault.grantRole(
     await contracts.proofVault.EVIDENCE_ADMIN_ROLE(),
-    admin!.address
+    admin!.address,
   );
 
   await contracts.proofVault.grantRole(
     await contracts.proofVault.LEGAL_AUTHORITY_ROLE(),
-    legalAuthority!.address
+    legalAuthority!.address,
   );
 
   await contracts.proofVault.grantRole(
     await contracts.proofVault.FORENSIC_EXPERT_ROLE(),
-    forensicExpert!.address
+    forensicExpert!.address,
   );
 
   // Grant roles in LegalCaseManager
   await contracts.legalCaseManager.grantRole(
     await contracts.legalCaseManager.CASE_ADMIN_ROLE(),
-    admin!.address
+    admin!.address,
   );
 
   await contracts.legalCaseManager.grantRole(
     await contracts.legalCaseManager.JUDGE_ROLE(),
-    legalAuthority!.address
+    legalAuthority!.address,
   );
 
   return {
@@ -128,7 +120,10 @@ export async function setupTestAccounts(contracts: TestContracts): Promise<TestA
 /**
  * Setup complete test environment
  */
-export async function setupTestEnvironment(): Promise<{ contracts: TestContracts; accounts: TestAccounts }> {
+export async function setupTestEnvironment(): Promise<{
+  contracts: TestContracts;
+  accounts: TestAccounts;
+}> {
   const contracts = await deployTestContracts();
   const accounts = await setupTestAccounts(contracts);
 

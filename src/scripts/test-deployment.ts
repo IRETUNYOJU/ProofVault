@@ -25,7 +25,7 @@ class DeploymentTester {
 
     try {
       const hederaConfig = config.getHederaClientConfig(this.networkName);
-      
+
       // Validate configuration
       if (!isValidHederaAccountId(hederaConfig.operatorId)) {
         throw new Error(`Invalid operator ID format: ${hederaConfig.operatorId}`);
@@ -36,9 +36,7 @@ class DeploymentTester {
       }
 
       // Create client
-      const client = hederaConfig.network === 'testnet' 
-        ? Client.forTestnet() 
-        : Client.forMainnet();
+      const client = hederaConfig.network === 'testnet' ? Client.forTestnet() : Client.forMainnet();
 
       const operatorKey = PrivateKey.fromString(hederaConfig.operatorKey);
       const operatorId = AccountId.fromString(hederaConfig.operatorId);
@@ -68,14 +66,14 @@ class DeploymentTester {
 
     try {
       const { loadContractArtifact } = await import('../utils');
-      
+
       // Test loading each contract artifact
       const contracts = ['IdentityAttestation', 'ProofVault', 'LegalCaseManager'];
-      
+
       for (const contractName of contracts) {
         try {
           const artifact = loadContractArtifact(contractName);
-          
+
           if (!artifact.abi || !artifact.bytecode) {
             throw new Error(`Invalid artifact for ${contractName}`);
           }
@@ -107,7 +105,7 @@ class DeploymentTester {
 
     try {
       const deploymentConfig = config.getDeploymentConfig(this.networkName);
-      
+
       // Validate configuration
       config.validateConfig(deploymentConfig);
 
@@ -174,13 +172,13 @@ class DeploymentTester {
  */
 async function main(): Promise<void> {
   const networkName = process.argv[2] || process.env['NETWORK'] || 'testnet';
-  
+
   console.log('🧪 ProofVault Deployment Test Suite');
   console.log('===================================\n');
-  
+
   const tester = new DeploymentTester(networkName);
   const success = await tester.runAllTests();
-  
+
   process.exit(success ? 0 : 1);
 }
 

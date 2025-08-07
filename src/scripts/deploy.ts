@@ -20,14 +20,9 @@ import type {
   DeploymentConfig,
   DeploymentResult,
   HederaClientConfig,
-  HederaContractInfo
+  HederaContractInfo,
 } from '../types';
-import {
-  ConsoleLogger,
-  formatGas,
-  loadContractArtifact,
-  saveDeploymentResult
-} from '../utils';
+import { ConsoleLogger, formatGas, loadContractArtifact, saveDeploymentResult } from '../utils';
 
 class HederaContractDeployer {
   private logger: ConsoleLogger;
@@ -141,7 +136,7 @@ class HederaContractDeployer {
    */
   private async deployContract(
     contractName: string,
-    constructorArgs: any[] = []
+    constructorArgs: any[] = [],
   ): Promise<DeployedContract> {
     this.logger.info(`\n🚀 Deploying ${contractName}...`);
 
@@ -266,27 +261,21 @@ class HederaContractDeployer {
       // 1. Deploy IdentityAttestation
       const identityAttestation = await this.deployContract(
         'IdentityAttestation',
-        this.config.contracts.identityAttestation.constructorArgs || []
+        this.config.contracts.identityAttestation.constructorArgs || [],
       );
       this.deploymentResult.contracts['IdentityAttestation'] = identityAttestation;
 
       // 2. Deploy ProofVault
       const proofVault = await this.deployContract(
         'ProofVault',
-        this.config.contracts.proofVault.constructorArgs || []
+        this.config.contracts.proofVault.constructorArgs || [],
       );
       this.deploymentResult.contracts['ProofVault'] = proofVault;
 
       // 3. Deploy LegalCaseManager with dependencies
-      const legalCaseManagerArgs = [
-        proofVault.address,
-        identityAttestation.address,
-      ];
+      const legalCaseManagerArgs = [proofVault.address, identityAttestation.address];
 
-      const legalCaseManager = await this.deployContract(
-        'LegalCaseManager',
-        legalCaseManagerArgs
-      );
+      const legalCaseManager = await this.deployContract('LegalCaseManager', legalCaseManagerArgs);
       this.deploymentResult.contracts['LegalCaseManager'] = legalCaseManager;
 
       this.logger.info('\n🎉 All contracts deployed successfully!');
@@ -299,7 +288,6 @@ class HederaContractDeployer {
       this.deploymentResult.totalGasUsed = totalGasUsed.toString();
 
       this.logger.info(`Total gas used: ${formatGas(totalGasUsed)}`);
-
     } catch (error) {
       this.deploymentResult.error = error instanceof Error ? error.message : String(error);
       throw error;
@@ -320,7 +308,7 @@ class HederaContractDeployer {
     // Note: Hedera doesn't have a standard block explorer verification API like Etherscan
     // This would need to be implemented based on the specific block explorer being used
     // For now, we'll just mark contracts as verified
-    
+
     for (const [name, contract] of Object.entries(this.deploymentResult.contracts)) {
       this.logger.info(`Marking ${name} as verified (placeholder implementation)`);
       contract.verified = true;
@@ -334,19 +322,18 @@ class HederaContractDeployer {
    */
   public async deploy(): Promise<DeploymentResult> {
     const startTime = Date.now();
-    
+
     try {
       await this.deployAllContracts();
-      
+
       if (this.config.verification?.enabled) {
         await this.verifyContracts();
       }
-      
+
       this.deploymentResult.success = true;
-      
+
       const duration = Date.now() - startTime;
       this.logger.info(`\n⏱️  Deployment completed in ${duration}ms`);
-      
     } catch (error) {
       this.deploymentResult.success = false;
       this.deploymentResult.error = error instanceof Error ? error.message : String(error);
@@ -358,7 +345,7 @@ class HederaContractDeployer {
       await saveDeploymentResult(
         this.deploymentResult,
         config.getDeploymentOutputDir(),
-        this.logger
+        this.logger,
       );
     } catch (error) {
       this.logger.error('Failed to save deployment result:', error);
@@ -384,7 +371,7 @@ async function main(): Promise<void> {
     console.log('\n🎊 Deployment Summary:');
     console.log('======================');
     for (const [name, contract] of Object.entries(result.contracts)) {
-      const deployedContract = contract as DeployedContract;
+      const deployedContract = contract;
       console.log(`${name}: ${deployedContract.address}`);
     }
     console.log(`\nTotal gas used: ${formatGas(result.totalGasUsed)}`);
@@ -405,4 +392,3 @@ if (require.main === module) {
 }
 
 export { main as deployMain, HederaContractDeployer };
-

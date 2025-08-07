@@ -22,7 +22,10 @@ function getEnvVar(name: string, required = true, defaultValue?: string): string
  * Get network configuration based on environment
  */
 export function getNetworkConfig(networkName?: string): NetworkConfig {
-  const network = (networkName || process.env['NETWORK'] || 'testnet') as 'testnet' | 'mainnet' | 'local';
+  const network = (networkName || process.env['NETWORK'] || 'testnet') as
+    | 'testnet'
+    | 'mainnet'
+    | 'local';
 
   switch (network) {
     case 'testnet':
@@ -51,7 +54,11 @@ export function getNetworkConfig(networkName?: string): NetworkConfig {
       return {
         network: 'local',
         rpcUrl: getEnvVar('LOCAL_RPC_URL', true, 'http://localhost:8545'),
-        operatorKey: getEnvVar('LOCAL_OPERATOR_KEY', true, '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'),
+        operatorKey: getEnvVar(
+          'LOCAL_OPERATOR_KEY',
+          true,
+          '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+        ),
         operatorId: getEnvVar('LOCAL_OPERATOR_ID', false),
         chainId: 31337,
         gasPrice: 'auto',
@@ -68,14 +75,14 @@ export function getNetworkConfig(networkName?: string): NetworkConfig {
  */
 export function getHederaClientConfig(networkName?: string): HederaClientConfig {
   const network = (networkName || process.env['NETWORK'] || 'testnet') as 'testnet' | 'mainnet';
-  
+
   if (network === 'testnet') {
     return {
       operatorId: getEnvVar('OPERATOR_ID', true, '0.0.123456'),
       operatorKey: getEnvVar('OPERATOR_KEY'),
       network: 'testnet',
       maxTransactionFee: 100_000_000, // 1 HBAR
-      maxQueryPayment: 10_000_000,    // 0.1 HBAR
+      maxQueryPayment: 10_000_000, // 0.1 HBAR
     };
   } else {
     return {
@@ -83,7 +90,7 @@ export function getHederaClientConfig(networkName?: string): HederaClientConfig 
       operatorKey: getEnvVar('MAINNET_OPERATOR_KEY'),
       network: 'mainnet',
       maxTransactionFee: 100_000_000, // 1 HBAR
-      maxQueryPayment: 10_000_000,    // 0.1 HBAR
+      maxQueryPayment: 10_000_000, // 0.1 HBAR
     };
   }
 }
@@ -145,7 +152,11 @@ export function validateConfig(config: DeploymentConfig): void {
   }
 
   // Validate verification configuration
-  if (config.verification?.enabled && !config.verification.apiKey && config.network.network !== 'local') {
+  if (
+    config.verification?.enabled &&
+    !config.verification.apiKey &&
+    config.network.network !== 'local'
+  ) {
     console.warn('Contract verification is enabled but no API key provided');
   }
 }
@@ -153,7 +164,7 @@ export function validateConfig(config: DeploymentConfig): void {
 /**
  * Get gas configuration
  */
-export function getGasConfig(networkName?: string): { gasPrice?: string; gasLimit?: number } {
+export function getGasConfig(_networkName?: string): { gasPrice?: string; gasLimit?: number } {
   return {
     gasPrice: getEnvVar('GAS_PRICE', false, 'auto'),
     gasLimit: parseInt(getEnvVar('GAS_LIMIT', false, '8000000'), 10),

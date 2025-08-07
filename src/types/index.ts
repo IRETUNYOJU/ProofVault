@@ -168,7 +168,13 @@ export class HederaClientError extends Error {
 // Utility types
 export type NetworkName = 'testnet' | 'mainnet' | 'local';
 export type ContractName = 'IdentityAttestation' | 'ProofVault' | 'LegalCaseManager';
-export type DeploymentStatus = 'pending' | 'deploying' | 'deployed' | 'failed' | 'verifying' | 'verified';
+export type DeploymentStatus =
+  | 'pending'
+  | 'deploying'
+  | 'deployed'
+  | 'failed'
+  | 'verifying'
+  | 'verified';
 
 export interface Logger {
   info(message: string, ...args: any[]): void;

@@ -4,10 +4,7 @@
 
 import fs from 'fs';
 import path from 'path';
-import type {
-    DeploymentResult,
-    Logger
-} from '../types';
+import type { DeploymentResult, Logger } from '../types';
 
 /**
  * Simple console logger implementation
@@ -95,7 +92,7 @@ export function contractIdToEvmAddress(contractId: string): string {
 export async function waitForHederaTransaction(
   transactionId: string,
   timeout = 60000,
-  logger?: Logger
+  logger?: Logger,
 ): Promise<boolean> {
   logger?.info(`Waiting for Hedera transaction ${transactionId}...`);
 
@@ -107,7 +104,7 @@ export async function waitForHederaTransaction(
     try {
       // In a real implementation, you would query the transaction status
       // For now, we'll simulate a successful confirmation after a short delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       logger?.info(`Transaction ${transactionId} confirmed`);
       return true;
@@ -125,7 +122,7 @@ export async function waitForHederaTransaction(
 export async function saveDeploymentResult(
   result: DeploymentResult,
   outputDir: string,
-  logger?: Logger
+  logger?: Logger,
 ): Promise<void> {
   try {
     // Ensure output directory exists
@@ -135,7 +132,7 @@ export async function saveDeploymentResult(
 
     const filename = `deployment-${result.network}-${Date.now()}.json`;
     const filepath = path.join(outputDir, filename);
-    
+
     fs.writeFileSync(filepath, JSON.stringify(result, null, 2));
     logger?.info(`Deployment result saved to ${filepath}`);
 
@@ -160,7 +157,7 @@ export function loadLatestDeployment(network: string, outputDir: string): Deploy
       return JSON.parse(content) as DeploymentResult;
     }
     return null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -210,7 +207,7 @@ export function isValidAddress(address: string): boolean {
  * Sleep for specified milliseconds
  */
 export function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -220,26 +217,26 @@ export async function retry<T>(
   fn: () => Promise<T>,
   maxRetries = 3,
   baseDelay = 1000,
-  logger?: Logger
+  logger?: Logger,
 ): Promise<T> {
   let lastError: Error;
-  
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       return await fn();
     } catch (error) {
       lastError = error as Error;
-      
+
       if (attempt === maxRetries) {
         break;
       }
-      
+
       const delay = baseDelay * Math.pow(2, attempt - 1);
       logger?.warn(`Attempt ${attempt} failed, retrying in ${delay}ms...`, error);
       await sleep(delay);
     }
   }
-  
+
   throw lastError!;
 }
 
@@ -247,7 +244,13 @@ export async function retry<T>(
  * Get contract artifact path
  */
 export function getContractArtifactPath(contractName: string): string {
-  return path.join(process.cwd(), 'artifacts', 'contracts', `${contractName}.sol`, `${contractName}.json`);
+  return path.join(
+    process.cwd(),
+    'artifacts',
+    'contracts',
+    `${contractName}.sol`,
+    `${contractName}.json`,
+  );
 }
 
 /**
@@ -255,11 +258,11 @@ export function getContractArtifactPath(contractName: string): string {
  */
 export function loadContractArtifact(contractName: string): any {
   const artifactPath = getContractArtifactPath(contractName);
-  
+
   if (!fs.existsSync(artifactPath)) {
     throw new Error(`Contract artifact not found: ${artifactPath}`);
   }
-  
+
   const content = fs.readFileSync(artifactPath, 'utf8');
   return JSON.parse(content);
 }
