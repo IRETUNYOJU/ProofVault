@@ -208,8 +208,13 @@ export function expectRevert(promise: Promise<unknown>, message?: string) {
 /**
  * Helper to calculate gas used
  */
-export async function getGasUsed(tx: { wait(): Promise<{ gasUsed: bigint }> }): Promise<bigint> {
+export async function getGasUsed(tx: {
+  wait(): Promise<{ gasUsed: bigint } | null>;
+}): Promise<bigint> {
   const receipt = await tx.wait();
+  if (!receipt) {
+    throw new Error('Transaction receipt is null');
+  }
   return receipt.gasUsed;
 }
 
