@@ -3,7 +3,6 @@ pragma solidity ^0.8.19;
 
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
 
 interface IProofVault {
     function getEvidenceRecord(uint256 evidenceId) external view returns (
@@ -26,7 +25,6 @@ interface IIdentityAttestation {
  * @notice Integrates with ProofVault for evidence management and identity verification
  */
 contract LegalCaseManager is AccessControl, ReentrancyGuard {
-    using Counters for Counters.Counter;
 
     // Role definitions
     bytes32 public constant CASE_ADMIN_ROLE = keccak256("CASE_ADMIN_ROLE");
@@ -168,8 +166,8 @@ contract LegalCaseManager is AccessControl, ReentrancyGuard {
     IIdentityAttestation public identityAttestation;
 
     // State variables
-    Counters.Counter private _caseIdCounter;
-    Counters.Counter private _orderIdCounter;
+    uint256 private _caseIdCounter;
+    uint256 private _orderIdCounter;
 
     mapping(uint256 => LegalCase) public legalCases;
     mapping(uint256 => CaseParty[]) public caseParties;
@@ -269,7 +267,7 @@ contract LegalCaseManager is AccessControl, ReentrancyGuard {
     }
 
     modifier validCaseId(uint256 caseId) {
-        require(caseId > 0 && caseId <= _caseIdCounter.current(), "Invalid case ID");
+        require(caseId > 0 && caseId <= _caseIdCounter, "Invalid case ID");
         _;
     }
 
@@ -306,8 +304,8 @@ contract LegalCaseManager is AccessControl, ReentrancyGuard {
         require(caseNumberToId[_caseNumber] == 0, "Case number already exists");
         require(bytes(_caseTitle).length > 0, "Case title required");
 
-        _caseIdCounter.increment();
-        uint256 newCaseId = _caseIdCounter.current();
+        _caseIdCounter++;
+        uint256 newCaseId = _caseIdCounter;
 
         legalCases[newCaseId] = LegalCase({
             caseId: newCaseId,
@@ -487,8 +485,8 @@ contract LegalCaseManager is AccessControl, ReentrancyGuard {
             "Only judge can issue court orders"
         );
 
-        _orderIdCounter.increment();
-        uint256 newOrderId = _orderIdCounter.current();
+        _orderIdCounter++;
+        uint256 newOrderId = _orderIdCounter;
 
         CourtOrder memory newOrder = CourtOrder({
             orderId: newOrderId,
@@ -660,7 +658,7 @@ contract LegalCaseManager is AccessControl, ReentrancyGuard {
      * @dev Get total number of cases
      */
     function getTotalCases() external view returns (uint256) {
-        return _caseIdCounter.current();
+        return _caseIdCounter;
     }
 
     // Internal functions

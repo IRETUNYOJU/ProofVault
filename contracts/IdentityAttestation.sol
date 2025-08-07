@@ -3,7 +3,6 @@ pragma solidity ^0.8.19;
 
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
 
 /**
  * @title IdentityAttestation
